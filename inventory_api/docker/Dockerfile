@@ -21,6 +21,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project files
 COPY . /app
 
+# Make migrations and migrate the database
+RUN python manage.py makemigrations inventory
+RUN python manage.py migrate
+
 # Collect static files (for production, if needed)
 RUN python manage.py collectstatic --noinput
 
