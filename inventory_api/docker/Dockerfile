@@ -16,7 +16,7 @@ RUN apt-get update \
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r inventory_api/requirements.txt
 
 # Copy project files
 COPY . /app
