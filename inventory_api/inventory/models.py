@@ -20,12 +20,6 @@ class Supplier(models.Model):
     def __str__(self):
         return self.name
     
-    def total_inventory_quantity(self):
-        """Calculate the total quantity of all products from this supplier"""
-        total_quantity = Inventory.objects.filter(product__supplier=self) \
-            .aggregate(total_quantity=Sum('quantity'))['total_quantity']
-        return total_quantity or 0  # Return 0 if no quantity is found
-    
     def total_inventory_value(self):
         # Calculate total value of all products and their quantities in one query
         total_value = Product.objects.filter(supplier=self) \

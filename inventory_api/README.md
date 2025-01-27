@@ -23,7 +23,7 @@ The **Inventory Management System** is a RESTful API built using **Django REST F
 - **POST /inventory**: Update inventory levels for a product (`product_id`, `quantity`).
 
 ### File Handling
-- **POST /upload-csv**: Upload and process a CSV file to import product information. The system validates and processes the file, providing feedback on the number of successful records and errors.
+- **POST /upload-csv**: Upload and process a CSV file to import product information. The system validates and processes the file, providing feedback on the number of successful records and errors. The file must be in CSV format (.csv) and include the following required columns: name (product name), description (product description), price (decimal value for product price), supplier_name (supplier name matching an existing supplier), and quantity (positive integer for stock quantity). Any additional columns will be ignored. Rows with invalid data, such as missing suppliers or incorrect data types, are logged as errors, while valid rows are processed successfully.
 
 ### Reporting
 - Generate detailed reports on:
@@ -50,12 +50,13 @@ The **Inventory Management System** is a RESTful API built using **Django REST F
 ### Prerequisites
 - Docker & Docker Compose installed
 - Python 3.10 or above
-- PostgreSQL (if running locally without Docker)
+- PostgreSQL (prod)
+- sqlite3 (dev)
 
 ### Steps
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/inventory-management-system.git
+   git clone https://github.com/buchii1/inventory-management.git
    cd inventory-management-system
    ```
 
@@ -68,12 +69,7 @@ The **Inventory Management System** is a RESTful API built using **Django REST F
    docker-compose up --build
    ```
 
-4. **Run migrations**:
-   ```bash
-   docker-compose exec web python manage.py migrate
-   ```
-
-5. **Access the application**:
+4. **Access the application**:
    - API: [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
    - Admin Panel: [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
@@ -98,42 +94,11 @@ The **Inventory Management System** is a RESTful API built using **Django REST F
 
 ---
 
-## Deployment
-1. **Build Docker Image**:
-   ```bash
-   docker build -t inventory-api:latest .
-   ```
-
-2. **Push to a Container Registry** (e.g., Docker Hub):
-   ```bash
-   docker tag inventory-api:latest your-dockerhub-username/inventory-api:latest
-   docker push your-dockerhub-username/inventory-api:latest
-   ```
-
-3. **Deploy to a Platform**:
-   - Platforms such as AWS, DigitalOcean, or Heroku can be used for hosting.
-   - Ensure to update environment variables and secrets in the deployment environment.
-
----
-
 ## Design Choices
 - **Django REST Framework**: Selected for its robust ecosystem and ease of integration with tools like Celery, PostgreSQL, and Redis.
 - **Docker**: To ensure the application runs consistently across different environments.
 - **Celery**: Handles background tasks like report generation to improve API responsiveness.
 - **Pandas**: Efficiently processes large CSV files for bulk data import.
-- **WeasyPrint**: Generates clean and professional PDF reports.
-
----
-
-## Challenges Faced
-1. **Efficient CSV Processing**:
-   - Used `pandas` for efficient data validation and transformation.
-   - Implemented database transactions to ensure atomicity.
-2. **Asynchronous Task Management**:
-   - Integrated Celery with Redis for handling long-running tasks.
-   - Used polling mechanisms to track task status.
-3. **Scalability**:
-   - Dockerized the application for easy scaling and deployment.
-   - Optimized database queries using `select_related` and bulk operations.
+- **Reportlab**: Generates clean and professional PDF reports.
 
 ---
