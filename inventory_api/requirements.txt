@@ -2,6 +2,7 @@ amqp==5.3.1
 asgiref==3.8.1
 attrs==24.3.0
 billiard==4.2.1
+Brotli==1.1.0
 celery==5.4.0
 chardet==5.2.0
 click==8.1.8
@@ -9,6 +10,7 @@ click-didyoumean==0.3.1
 click-plugins==1.1.1
 click-repl==0.3.0
 coverage==7.6.10
+dj-database-url==2.3.0
 Django==5.1.5
 django-filter==24.3
 djangorestframework==3.15.2
@@ -16,6 +18,7 @@ drf-spectacular==0.28.0
 factory_boy==3.3.1
 Faker==35.0.0
 gunicorn==23.0.0
+h11==0.14.0
 inflection==0.5.1
 iniconfig==2.0.0
 jsonschema==4.23.0
@@ -27,7 +30,7 @@ pandas==2.2.3
 pillow==11.1.0
 pluggy==1.5.0
 prompt_toolkit==3.0.50
-# psycopg2==2.9.10
+psycopg2==2.9.10
 psycopg2-binary==2.9.10
 pytest==8.3.4
 pytest-cov==6.0.0
@@ -45,5 +48,7 @@ sqlparse==0.5.3
 typing_extensions==4.12.2
 tzdata==2025.1
 uritemplate==4.1.1
+uvicorn==0.34.0
 vine==5.1.0
 wcwidth==0.2.13
+whitenoise==6.8.2
