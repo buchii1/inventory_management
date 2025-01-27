@@ -7,6 +7,7 @@ import pandas as pd
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from .factories import SupplierFactory, ProductFactory, InventoryFactory
+from django.test.utils import override_settings
 
 
 class SupplierAPIViewTestCase(APITestCase):
@@ -188,6 +189,7 @@ class InventoryReportViewTestCase(APITestCase):
 
         # Do not remove the directory if it is still in use by other files
 
+    @override_settings(CELERY_TASK_ALWAYS_EAGER=True, CELERY_TASK_EAGER_PROPAGATES=True)
     @patch("inventory.views.generate_inventory_report.delay")
     @patch("inventory.views.generate_inventory_report_pdf.apply_async")
     @patch("inventory.views.AsyncResult")  # Mock AsyncResult to simulate task states

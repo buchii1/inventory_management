@@ -1,6 +1,5 @@
 from decouple import config
 from .base import *
-from .test import *
 
 DEBUG = True
 ALLOWED_HOSTS = ['*']
