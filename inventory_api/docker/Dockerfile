@@ -1,4 +1,4 @@
-# Use the official Python 3.13 image as the base
+# Use the official Python 3.10-slim image as the base
 FROM python:3.10-slim
 
 # Set environment variables
@@ -10,9 +10,13 @@ WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc libpq-dev \
+    && apt-get install -y --no-install-recommends gcc libpq-dev curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Download the wait-for-it.sh script
+RUN curl -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh \
+    && chmod +x /usr/local/bin/wait-for-it.sh
 
 # Install Python dependencies
 COPY requirements.txt .
