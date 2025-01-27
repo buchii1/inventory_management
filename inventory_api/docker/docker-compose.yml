@@ -1,16 +1,10 @@
 services:
-  redis:
-    image: redis:7
-    container_name: redis_broker
-    ports:
-      - "6379:6379"
-
   web:
     build:
       context: ../
       dockerfile: docker/Dockerfile
     container_name: django_app
-    command: bash -c "sleep 10 && gunicorn inventory_api.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    command: gunicorn inventory_api.wsgi:application --bind 0.0.0.0:8000 --workers 3
     volumes:
       - ..:/app
     env_file:
@@ -18,26 +12,28 @@ services:
     ports:
       - "8000:8000"
     depends_on:
+      # - db
       - redis
-    environment:
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+
+  redis:
+    image: redis:7
+    container_name: redis_broker
+    # ports:
+    #   - "6379:6379"
 
   celery:
     build:
       context: ../
       dockerfile: docker/Dockerfile
     container_name: celery_worker
-    command: ["./wait-for-it.sh", "redis:6379", "--", "celery", "-A", "inventory_api", "worker", "--loglevel=info"]
+    command: celery -A inventory_api worker --loglevel=info
     volumes:
       - ..:/app
     env_file:
       - ../.env
-    environment:
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
     depends_on:
       - redis
-
+      # - db
+    
 volumes:
   postgres_data:
