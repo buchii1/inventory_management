@@ -15,7 +15,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-COPY COPY inventory_api/requirements.txt
+COPY inventory_api/requirements.txt .
 RUN pip install --no-cache-dir -r inventory_api/requirements.txt
 
 # Copy project files
