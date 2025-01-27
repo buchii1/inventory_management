@@ -1,0 +1,52 @@
+services:
+  web:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    container_name: django_app
+    command: gunicorn inventory_api.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    volumes:
+      - ..:/app
+    env_file:
+      - ../.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      # - db
+      - redis
+
+  # db:
+  #   image: postgres:latest
+  #   container_name: postgres_db
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   environment:
+  #     POSTGRES_USER: buchii
+  #     POSTGRES_PASSWORD: president042
+  #     POSTGRES_DB: inventory
+  #     POSTGRES_HOST_AUTH_METHOD: trust
+  #     CELERY_BROKER_URL: redis://:whWVnhmQhkFza1eCz10EC856emYoDtT2@redis-12723.c338.eu-west-2-1.ec2.redns.redis-cloud.com:12723/0
+  #     CELERY_RESULT_BACKEND: redis://:whWVnhmQhkFza1eCz10EC856emYoDtT2@redis-12723.c338.eu-west-2-1.ec2.redns.redis-cloud.com:12723/0
+
+  redis:
+    image: redis:7
+    container_name: redis_broker
+    # ports:
+    #   - "6379:6379"
+
+  celery:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    container_name: celery_worker
+    command: celery -A inventory_api worker --loglevel=info
+    volumes:
+      - ..:/app
+    env_file:
+      - ../.env
+    depends_on:
+      - redis
+      # - db
+    
+volumes:
+  postgres_data:

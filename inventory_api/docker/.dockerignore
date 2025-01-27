@@ -1,0 +1,31 @@
+# Ignore Python bytecode
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+db.sqlite3
+
+# Ignore virtual environments
+myenv/
+venv/
+env/
+
+# Ignore media files
+media/
+
+# Ignore local configuration files
+.env
+
+# Ignore Docker-related files
+docker-compose.override.yml
+
+# Ignore version control
+.git
+.gitignore
+
+# Ignore IDE/editor files
+.idea/
+.vscode/
+*.swp
+*.swo

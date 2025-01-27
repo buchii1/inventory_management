@@ -1,0 +1,761 @@
+openapi: 3.0.3
+info:
+  title: Inventory Management API
+  version: 1.0.0
+  description: A product inventory management system built using DRF
+paths:
+  /api/inventory/:
+    get:
+      operationId: inventory_list
+      description: |-
+        Handles GET and POST requests for Inventory objects.
+
+        - GET: Retrieve a list of inventory levels for all products.
+        - POST: Create or update inventory levels for a specific product.
+      tags:
+      - inventory
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Inventory'
+          description: ''
+    post:
+      operationId: inventory_create
+      description: |-
+        Handles GET and POST requests for Inventory objects.
+
+        - GET: Retrieve a list of inventory levels for all products.
+        - POST: Create or update inventory levels for a specific product.
+      tags:
+      - inventory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+          description: ''
+  /api/inventory-report/:
+    get:
+      operationId: inventory_report_retrieve
+      description: Trigger the generation of the inventory report.
+      tags:
+      - inventory-report
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/inventory/{id}/:
+    get:
+      operationId: inventory_retrieve
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific inventory.
+
+        - GET: Retrieve inventory details for a specific product.
+        - PUT/PATCH: Update the inventory level for a product.
+        - DELETE: Remove inventory details for a product.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - inventory
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+          description: ''
+    put:
+      operationId: inventory_update
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific inventory.
+
+        - GET: Retrieve inventory details for a specific product.
+        - PUT/PATCH: Update the inventory level for a product.
+        - DELETE: Remove inventory details for a product.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - inventory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+          description: ''
+    patch:
+      operationId: inventory_partial_update
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific inventory.
+
+        - GET: Retrieve inventory details for a specific product.
+        - PUT/PATCH: Update the inventory level for a product.
+        - DELETE: Remove inventory details for a product.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - inventory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInventory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedInventory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedInventory'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+          description: ''
+    delete:
+      operationId: inventory_destroy
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific inventory.
+
+        - GET: Retrieve inventory details for a specific product.
+        - PUT/PATCH: Update the inventory level for a product.
+        - DELETE: Remove inventory details for a product.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - inventory
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/products/:
+    get:
+      operationId: products_list
+      description: Override GET to add pagination and filtering for product list.
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+          description: ''
+    post:
+      operationId: products_create
+      description: Override POST to handle product creation.
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+  /api/products/{id}/:
+    get:
+      operationId: products_retrieve
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific product.
+
+        - GET: Retrieve a single product by its ID.
+        - PUT/PATCH: Update an existing product's details.
+        - DELETE: Remove a product from the database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    put:
+      operationId: products_update
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific product.
+
+        - GET: Retrieve a single product by its ID.
+        - PUT/PATCH: Update an existing product's details.
+        - DELETE: Remove a product from the database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    patch:
+      operationId: products_partial_update
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific product.
+
+        - GET: Retrieve a single product by its ID.
+        - PUT/PATCH: Update an existing product's details.
+        - DELETE: Remove a product from the database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    delete:
+      operationId: products_destroy
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific product.
+
+        - GET: Retrieve a single product by its ID.
+        - PUT/PATCH: Update an existing product's details.
+        - DELETE: Remove a product from the database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/products/upload-csv/:
+    post:
+      operationId: products_upload_csv_create
+      description: Upload a CSV file to import product data
+      tags:
+      - products
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV file containing product data
+              required:
+              - file
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCSVResponse'
+          description: ''
+  /api/suppliers/:
+    get:
+      operationId: suppliers_list
+      description: |-
+        Handles GET and POST requests for Supplier objects.
+
+        - GET: Retrieve a list of all suppliers.
+        - POST: Create a new supplier.
+      tags:
+      - suppliers
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Supplier'
+          description: ''
+    post:
+      operationId: suppliers_create
+      description: |-
+        Handles GET and POST requests for Supplier objects.
+
+        - GET: Retrieve a list of all suppliers.
+        - POST: Create a new supplier.
+      tags:
+      - suppliers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Supplier'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Supplier'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Supplier'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+          description: ''
+  /api/suppliers/{id}/:
+    get:
+      operationId: suppliers_retrieve
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific supplier.
+
+        - GET: Retrieve a single supplier by its ID.
+        - PUT/PATCH: Update an existing supplier's details.
+        - DELETE: Remove a supplier from the database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - suppliers
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+          description: ''
+    put:
+      operationId: suppliers_update
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific supplier.
+
+        - GET: Retrieve a single supplier by its ID.
+        - PUT/PATCH: Update an existing supplier's details.
+        - DELETE: Remove a supplier from the database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - suppliers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Supplier'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Supplier'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Supplier'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+          description: ''
+    patch:
+      operationId: suppliers_partial_update
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific supplier.
+
+        - GET: Retrieve a single supplier by its ID.
+        - PUT/PATCH: Update an existing supplier's details.
+        - DELETE: Remove a supplier from the database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - suppliers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSupplier'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSupplier'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSupplier'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+          description: ''
+    delete:
+      operationId: suppliers_destroy
+      description: |-
+        Handles GET, PUT, PATCH, and DELETE requests for a specific supplier.
+
+        - GET: Retrieve a single supplier by its ID.
+        - PUT/PATCH: Update an existing supplier's details.
+        - DELETE: Remove a supplier from the database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - suppliers
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/suppliers/{id}/products/:
+    get:
+      operationId: suppliers_products_retrieve
+      description: Retrieves all products and their quantities for a given supplier.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - suppliers
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    Inventory:
+      type: object
+      description: DocString
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          allOf:
+          - $ref: '#/components/schemas/Product'
+          readOnly: true
+        product_id:
+          type: integer
+          writeOnly: true
+        quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - id
+      - product
+      - product_id
+    PatchedInventory:
+      type: object
+      description: DocString
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          allOf:
+          - $ref: '#/components/schemas/Product'
+          readOnly: true
+        product_id:
+          type: integer
+          writeOnly: true
+        quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+    PatchedProduct:
+      type: object
+      description: DocString
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        supplier:
+          allOf:
+          - $ref: '#/components/schemas/Supplier'
+          readOnly: true
+        supplier_id:
+          type: integer
+          writeOnly: true
+    PatchedSupplier:
+      type: object
+      description: DocString
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        contact_info:
+          type: string
+    Product:
+      type: object
+      description: DocString
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        supplier:
+          allOf:
+          - $ref: '#/components/schemas/Supplier'
+          readOnly: true
+        supplier_id:
+          type: integer
+          writeOnly: true
+      required:
+      - description
+      - id
+      - name
+      - price
+      - supplier
+      - supplier_id
+    ProductCSVResponse:
+      type: object
+      description: DocString
+      properties:
+        message:
+          type: string
+        success_count:
+          type: integer
+        error_count:
+          type: integer
+        errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+      required:
+      - error_count
+      - errors
+      - message
+      - success_count
+    Supplier:
+      type: object
+      description: DocString
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        contact_info:
+          type: string
+      required:
+      - contact_info
+      - id
+      - name
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
