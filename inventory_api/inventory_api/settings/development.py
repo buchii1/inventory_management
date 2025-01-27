@@ -3,7 +3,7 @@ from .base import *
 from .test import *
 
 DEBUG = True
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost']
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -15,4 +15,4 @@ DATABASES = {
     }
 }
 
-BASE_URL = 'https://inventorymanagement-production-c7c0.up.railway.app/'
+BASE_URL = config("BASE_URL_DEV")

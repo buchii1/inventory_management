@@ -1,6 +1,7 @@
 from .base import *
 from .test import *
 from decouple import config, Csv
+import dj_database_url
 
 DEBUG = False
 ALLOWED_HOSTS = config("ALLOWED_HOSTS_PROD", default="your-production-domain.com", cast=Csv())
@@ -8,7 +9,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS_PROD", default="your-production-domain.com
 # Fetch database credentials using python-decouple
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"postgres://{config('DB_USER')}:{config('DB_PASSWORD')}@{config('DB_HOST')}:{config('DB_PORT')}/{config('DB_NAME')}",
+        default=f"postgresql://postgres:{config('DB_PASSWORD')}@{config('DB_HOST')}:{config('DB_PORT')}/{config('DB_NAME')}",
         conn_max_age=600
     )
 }

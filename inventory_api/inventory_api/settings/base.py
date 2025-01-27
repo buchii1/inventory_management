@@ -151,12 +151,6 @@ SPECTACULAR_SETTINGS = {
 
 REPORTS_DIR = os.path.join(BASE_DIR, 'generated_reports')
 
-# # Set BASE_URL based on environment
-# if ENVIRONMENT == "development":
-#     BASE_URL = config("BASE_URL_DEV")
-# else:  # Assume production
-#     BASE_URL = config("BASE_URL_PROD")
-
 # Celery config
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
