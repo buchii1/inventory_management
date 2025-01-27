@@ -1,7 +1,7 @@
 services:
   web:
     build:
-      context: ../
+      context: .
       dockerfile: inventory_api/docker
     container_name: django_app
     command: gunicorn inventory_api.wsgi:application --bind 0.0.0.0:8000 --workers 3
@@ -32,11 +32,11 @@ services:
     image: redis:7
     container_name: redis_broker
     # ports:
-    #   - "6379:6379"
+    #   - "6379:6379" 
 
   celery:
     build:
-      context: ../
+      context: .
       dockerfile: inventory_api/docker
     container_name: celery_worker
     command: celery -A inventory_api worker --loglevel=info
