@@ -4,7 +4,7 @@ __pycache__
 *.pyo
 .pytest_cache/
 .coverage
-db.sqlite3
+.db.sqlite3
 
 # Ignore virtual environments
 myenv/

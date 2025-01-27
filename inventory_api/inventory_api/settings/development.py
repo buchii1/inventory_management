@@ -15,4 +15,4 @@ DATABASES = {
     }
 }
 
-BASE_URL = ['*']
+BASE_URL = 'https://inventorymanagement-production-c7c0.up.railway.app/'
