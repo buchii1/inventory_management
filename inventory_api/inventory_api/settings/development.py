@@ -3,7 +3,7 @@ from .base import *
 from .test import *
 
 DEBUG = True
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['*']
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -15,4 +15,4 @@ DATABASES = {
     }
 }
 
-BASE_URL = config("BASE_URL_DEV")
+BASE_URL = ['*']
