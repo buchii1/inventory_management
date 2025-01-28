@@ -55,9 +55,7 @@ def generate_inventory_report():
             "total_inventory": Inventory.objects.filter(product__supplier=supplier).aggregate(
                 total_inventory=Sum('quantity')
             )['total_inventory'] or 0,
-            "total_stock_value": Inventory.objects.filter(product__supplier=supplier).annotate(
-                stock_value=F('product__price') * F('quantity')
-            ).aggregate(total_stock_value=Sum('stock_value'))['total_stock_value'] or 0,
+            "total_stock_value": supplier.total_inventory_value(),
         }
         for supplier in suppliers
     ]
@@ -131,9 +129,9 @@ def generate_inventory_report_pdf(task_id):
     for supplier in report["supplier_performance"]:
         supplier_data.append([
             supplier["supplier_name"],
-            f"{supplier['total_products_supplied']:,}",  # Format products supplied with commas
-            f"{supplier['total_inventory']:,}",  # Format inventory with commas
-            f"${supplier['total_stock_value']:,.2f}"  # Format stock value with commas
+            f"{supplier['total_products_supplied']:,}",
+            f"{supplier['total_inventory']:,}",
+            f"${supplier['total_stock_value']:,.2f}"
         ])
 
     supplier_table = Table(supplier_data, colWidths=[150, 120, 120, 120])

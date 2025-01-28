@@ -1,6 +1,7 @@
 from time import sleep
 from decimal import Decimal
 import os
+import logging
 import pandas as pd
 from rest_framework.generics import (
     ListCreateAPIView,
@@ -26,6 +27,9 @@ from .serializers import (
     ProductCSVUploadSerializer,
     ProductCSVResponseSerializer,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 # Define custom pagination settings for the API
@@ -308,62 +312,90 @@ class InventoryReportView(APIView):
     """
     Trigger the generation of the inventory report.
     """
+
     def get(self, request, *args, **kwargs):
         try:
             # Trigger report generation task
+            logger.info("Triggering generate_inventory_report task.")
             task = generate_inventory_report.delay()
-            
+            logger.info("Task triggered with ID: %s", task.id)
+
             # Wait for the report to be generated
-            while task.state != 'SUCCESS' and task.state != 'FAILURE':
+            logger.info("Waiting for the report task (ID: %s) to complete.", task.id)
+            while task.state not in ['SUCCESS', 'FAILURE']:
+                logger.debug("Task (ID: %s) state: %s. Retrying in 2 seconds.", task.id, task.state)
                 sleep(2)  # Check every 2 seconds
 
             if task.state == 'SUCCESS':
-                # Once the report is generated, trigger PDF generation
+                logger.info("Report task (ID: %s) completed successfully. Triggering PDF generation.", task.id)
+
+                # Trigger PDF generation task
                 pdf_task_id = generate_inventory_report_pdf.apply_async(args=[task.id]).id
-                
+                logger.info("PDF generation task triggered with ID: %s", pdf_task_id)
+
                 # Wait for the PDF to be generated
+                logger.info("Waiting for the PDF task (ID: %s) to complete.", pdf_task_id)
                 while True:
                     pdf_task_result = AsyncResult(pdf_task_id)
+                    logger.debug("PDF task (ID: %s) state: %s.", pdf_task_id, pdf_task_result.state)
                     if pdf_task_result.state == 'SUCCESS':
+                        logger.info("PDF generation task (ID: %s) succeeded.", pdf_task_id)
                         break
                     elif pdf_task_result.state == 'FAILURE':
+                        logger.error("PDF generation task (ID: %s) failed.", pdf_task_id)
                         return Response({
                             "status": "Failure",
                             "message": "PDF generation failed."
                         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                     sleep(2)  # Check every 2 seconds
 
-                # Now, locate the generated PDF
+                # Locate the generated PDF
                 task_id_prefix = task.id[:8]  # First 8 characters of the task_id
                 reports_dir = os.path.join(settings.MEDIA_ROOT, "generated_reports")
-                
-                # Search for the PDF file that ends with the task_id_prefix
-                pdf_file_name = next(
-                    (file for file in os.listdir(reports_dir) if file.endswith(f"{task_id_prefix}.pdf")),
-                    None
-                )
+                logger.info("Searching for PDF file with prefix '%s' in directory: %s.", task_id_prefix, reports_dir)
+
+                try:
+                    pdf_file_name = next(
+                        (file for file in os.listdir(reports_dir) if file.endswith(f"{task_id_prefix}.pdf")),
+                        None
+                    )
+                except FileNotFoundError as e:
+                    logger.exception("The directory '%s' does not exist.", reports_dir)
+                    return Response({
+                        "status": "Failure",
+                        "message": "Reports directory not found."
+                    }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                except Exception as e:
+                    logger.exception("An error occurred while searching for the PDF file: %s", str(e))
+                    return Response({
+                        "status": "Failure",
+                        "message": "Error while locating PDF file."
+                    }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
                 if pdf_file_name:
                     # Build the absolute URL for the generated PDF file
                     pdf_download_link = f"{settings.BASE_URL}/media/generated_reports/{pdf_file_name}"
-
+                    logger.info("Found PDF file: %s. Returning download link.", pdf_file_name)
                     return Response({
                         "status": "Success",
                         "pdf_download_link": pdf_download_link
                     }, status=status.HTTP_200_OK)
                 else:
+                    logger.error("PDF file not found with prefix: %s in directory: %s.", task_id_prefix, reports_dir)
                     return Response({
                         "status": "Failure",
                         "message": "PDF file not found."
                     }, status=status.HTTP_404_NOT_FOUND)
-            
+
             else:
+                logger.error("Report generation task (ID: %s) failed with state: %s.", task.id, task.state)
                 return Response({
                     "status": "Failure",
                     "message": "Report generation failed."
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         except Exception as e:
+            logger.exception("An unexpected error occurred while processing the report: %s", str(e))
             return Response({
                 "status": "Failure",
                 "error": f"An error occurred: {str(e)}"
