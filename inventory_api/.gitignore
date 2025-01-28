@@ -20,7 +20,7 @@ myenv/
 *.pot
 *.py[cod]
 # db.sqlite3
-/media/
+# /media/
 /staticfiles/
 
 # Environment variables

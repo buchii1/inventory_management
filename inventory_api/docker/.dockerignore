@@ -12,7 +12,7 @@ venv/
 env/
 
 # Ignore media files
-media/
+# media/
 
 # Ignore local configuration files
 .env
