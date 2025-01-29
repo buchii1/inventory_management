@@ -1,4 +1,4 @@
-# Use the official Python 3.13 image as the base
+# Use the official Python 3.10-slim image as the base
 FROM python:3.10-slim
 
 # Set environment variables
@@ -31,5 +31,13 @@ RUN python manage.py collectstatic --noinput
 # Expose port 8000
 EXPOSE 8000
 
+# Create a script to run both Gunicorn and Celery
+RUN echo '#!/bin/bash\n\
+gunicorn inventory_api.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120 &\n\
+celery -A inventory_api worker --loglevel=info' > /start.sh
+
+# Make the script executable
+RUN chmod +x /start.sh
+
 # Default CMD for the Django application
-CMD ["gunicorn", "inventory_api.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120"]
+CMD ["/start.sh"]
