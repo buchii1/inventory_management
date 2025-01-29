@@ -28,16 +28,15 @@ RUN python manage.py migrate
 # Collect static files (for production, if needed)
 RUN python manage.py collectstatic --noinput
 
-# Expose port 8000
+# Expose port 8000 (even though we aren't starting the server)
 EXPOSE 8000
 
-# Create a script to run both Gunicorn and Celery
+# Create a script to run only Celery worker
 RUN echo '#!/bin/bash\n\
-gunicorn inventory_api.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120 &\n\
 celery -A inventory_api worker --loglevel=info' > /start.sh
 
 # Make the script executable
 RUN chmod +x /start.sh
 
-# Default CMD to start both Gunicorn and Celery in the same container
+# Default CMD to start Celery worker
 CMD ["/start.sh"]
