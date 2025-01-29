@@ -39,5 +39,5 @@ celery -A inventory_api worker --loglevel=info' > /start.sh
 # Make the script executable
 RUN chmod +x /start.sh
 
-# Default CMD for the Django application
+# Default CMD to start both Gunicorn and Celery in the same container
 CMD ["/start.sh"]

@@ -4,36 +4,15 @@ services:
       context: ../
       dockerfile: docker/Dockerfile
     container_name: django_app
-    command: gunicorn inventory_api.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    ports:
+      - "8000:8000"
     volumes:
       - ..:/app
     env_file:
       - ../.env
-    ports:
-      - "8000:8000"
     depends_on:
-      # - db
       - redis
 
   redis:
     image: redis:7
     container_name: redis_broker
-    # ports:
-    #   - "6379:6379"
-
-  celery:
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile
-    container_name: celery_worker
-    command: celery -A inventory_api worker --loglevel=info
-    volumes:
-      - ..:/app
-    env_file:
-      - ../.env
-    depends_on:
-      - redis
-      # - db
-    
-volumes:
-  postgres_data:
